@@ -4,17 +4,17 @@
  * @LastEditTime: 2021-07-21 13:51:55
  * @LastEditors: Changhua
  * @Description: Smart Robot Car V4.0
- * @FilePath: 
+ * @FilePath:
  */
 #include <avr/wdt.h>
-//#include <hardwareSerial.h>
+// #include <hardwareSerial.h>
 #include <stdio.h>
 #include <string.h>
 #include "ApplicationFunctionSet_xxx0.h"
 #include "DeviceDriverSet_xxx0.h"
 
 #include "ArduinoJson-v6.11.1.h" //ArduinoJson
-//#include "MPU6050_getdata.h"
+// #include "MPU6050_getdata.h"
 
 #include "QMI8658C.h"
 
@@ -25,7 +25,7 @@ ApplicationFunctionSet Application_FunctionSet;
 
 /*Hardware device object list*/
 QMI8658C AppQMI8658C;
-//MPU6050_getdata AppMPU6050getdata;
+// MPU6050_getdata AppMPU6050getdata;
 DeviceDriverSet_RBGLED AppRBG_LED;
 DeviceDriverSet_Key AppKey;
 DeviceDriverSet_ITR20001 AppITR20001;
@@ -37,7 +37,7 @@ DeviceDriverSet_Servo AppServo;
 DeviceDriverSet_IRrecv AppIRrecv;
 /*f(x) int */
 static boolean
-function_xxx(long x, long s, long e) //f(x)
+function_xxx(long x, long s, long e) // f(x)
 {
   if (s <= x && x <= e)
     return true;
@@ -66,7 +66,7 @@ enum SmartRobotCarMotionControl
   RightForward,  //(7)
   RightBackward, //(8)
   stop_it        //(9)
-};               //direction方向:（1）、（2）、 （3）、（4）、（5）、（6）
+}; // direction方向:（1）、（2）、 （3）、（4）、（5）、（6）
 
 /*Mode Control List*/
 enum SmartRobotCarFunctionalModel
@@ -145,7 +145,7 @@ static bool ApplicationFunctionSet_SmartRobotCarLeaveTheGround(void)
   }
 }
 /*
-  Straight line movement control：For dual-drive motors, due to frequent motor coefficient deviations and many external interference factors, 
+  Straight line movement control：For dual-drive motors, due to frequent motor coefficient deviations and many external interference factors,
   it is difficult for the car to achieve relative Straight line movement. For this reason, the feedback of the yaw control loop is added.
   direction：only forward/backward
   directionRecord：Used to update the direction and position data (Yaw value) when entering the function for the first time.
@@ -155,25 +155,25 @@ static bool ApplicationFunctionSet_SmartRobotCarLeaveTheGround(void)
 */
 static void ApplicationFunctionSet_SmartRobotCarLinearMotionControl(SmartRobotCarMotionControl direction, uint8_t directionRecord, uint8_t speed, uint8_t Kp, uint8_t UpperLimit)
 {
-  static float Yaw; //Yaw
+  static float Yaw; // Yaw
   static float yaw_So = 0;
   static uint8_t en = 110;
   static unsigned long is_time;
   if (en != directionRecord || millis() - is_time > 10)
   {
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_void, /*speed_A*/ 0,
-                                           /*direction_B*/ direction_void, /*speed_B*/ 0, /*controlED*/ control_enable); //Motor control
-    //AppMPU6050getdata.MPU6050_dveGetEulerAngles(&Yaw);
+                                           /*direction_B*/ direction_void, /*speed_B*/ 0, /*controlED*/ control_enable); // Motor control
+    // AppMPU6050getdata.MPU6050_dveGetEulerAngles(&Yaw);
     AppQMI8658C.QMI8658C_dveGetEulerAngles(&Yaw);
     is_time = millis();
   }
-  //if (en != directionRecord)
+  // if (en != directionRecord)
   if (en != directionRecord || Application_FunctionSet.Car_LeaveTheGround == false)
   {
     en = directionRecord;
     yaw_So = Yaw;
   }
-  //Add proportional constant Kp to increase rebound effect
+  // Add proportional constant Kp to increase rebound effect
   int R = (Yaw - yaw_So) * Kp + speed;
   if (R > UpperLimit)
   {
@@ -192,12 +192,12 @@ static void ApplicationFunctionSet_SmartRobotCarLinearMotionControl(SmartRobotCa
   {
     L = 10;
   }
-  if (direction == Forward) //Forward
+  if (direction == Forward) // Forward
   {
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ R,
                                            /*direction_B*/ direction_just, /*speed_B*/ L, /*controlED*/ control_enable);
   }
-  else if (direction == Backward) //Backward
+  else if (direction == Backward) // Backward
   {
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ L,
                                            /*direction_B*/ direction_back, /*speed_B*/ R, /*controlED*/ control_enable);
@@ -214,8 +214,8 @@ static void ApplicationFunctionSet_SmartRobotCarMotionControl(SmartRobotCarMotio
   static uint8_t directionRecord = 0;
   uint8_t Kp, UpperLimit;
   uint8_t speed = is_speed;
-  //Control mode that requires straight line movement adjustment（Car will has movement offset easily in the below mode，the movement cannot achieve the effect of a relatively straight direction
-  //so it needs to add control adjustment）
+  // Control mode that requires straight line movement adjustment（Car will has movement offset easily in the below mode，the movement cannot achieve the effect of a relatively straight direction
+  // so it needs to add control adjustment）
   switch (Application_SmartRobotCarxxx0.Functional_Mode)
   {
   case Rocker_mode:
@@ -251,10 +251,10 @@ static void ApplicationFunctionSet_SmartRobotCarMotionControl(SmartRobotCarMotio
     if (Application_SmartRobotCarxxx0.Functional_Mode == TraceBased_mode)
     {
       AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ speed,
-                                             /*direction_B*/ direction_just, /*speed_B*/ speed, /*controlED*/ control_enable); //Motor control
+                                             /*direction_B*/ direction_just, /*speed_B*/ speed, /*controlED*/ control_enable); // Motor control
     }
     else
-    { //When moving forward, enter the direction and position approach control loop processing
+    { // When moving forward, enter the direction and position approach control loop processing
       ApplicationFunctionSet_SmartRobotCarLinearMotionControl(Forward, directionRecord, speed, Kp, UpperLimit);
       directionRecord = 1;
     }
@@ -265,10 +265,10 @@ static void ApplicationFunctionSet_SmartRobotCarMotionControl(SmartRobotCarMotio
     if (Application_SmartRobotCarxxx0.Functional_Mode == TraceBased_mode)
     {
       AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ speed,
-                                             /*direction_B*/ direction_back, /*speed_B*/ speed, /*controlED*/ control_enable); //Motor control
+                                             /*direction_B*/ direction_back, /*speed_B*/ speed, /*controlED*/ control_enable); // Motor control
     }
     else
-    { //When moving backward, enter the direction and position approach control loop processing
+    { // When moving backward, enter the direction and position approach control loop processing
       ApplicationFunctionSet_SmartRobotCarLinearMotionControl(Backward, directionRecord, speed, Kp, UpperLimit);
       directionRecord = 2;
     }
@@ -278,43 +278,43 @@ static void ApplicationFunctionSet_SmartRobotCarMotionControl(SmartRobotCarMotio
     /* code */
     directionRecord = 3;
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ speed,
-                                           /*direction_B*/ direction_back, /*speed_B*/ speed, /*controlED*/ control_enable); //Motor control
+                                           /*direction_B*/ direction_back, /*speed_B*/ speed, /*controlED*/ control_enable); // Motor control
     break;
   case /* constant-expression */ Right:
     /* code */
     directionRecord = 4;
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ speed,
-                                           /*direction_B*/ direction_just, /*speed_B*/ speed, /*controlED*/ control_enable); //Motor control
+                                           /*direction_B*/ direction_just, /*speed_B*/ speed, /*controlED*/ control_enable); // Motor control
     break;
   case /* constant-expression */ LeftForward:
     /* code */
     directionRecord = 5;
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ speed,
-                                           /*direction_B*/ direction_just, /*speed_B*/ speed / 2, /*controlED*/ control_enable); //Motor control
+                                           /*direction_B*/ direction_just, /*speed_B*/ speed / 2, /*controlED*/ control_enable); // Motor control
     break;
   case /* constant-expression */ LeftBackward:
     /* code */
     directionRecord = 6;
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ speed,
-                                           /*direction_B*/ direction_back, /*speed_B*/ speed / 2, /*controlED*/ control_enable); //Motor control
+                                           /*direction_B*/ direction_back, /*speed_B*/ speed / 2, /*controlED*/ control_enable); // Motor control
     break;
   case /* constant-expression */ RightForward:
     /* code */
     directionRecord = 7;
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ speed / 2,
-                                           /*direction_B*/ direction_just, /*speed_B*/ speed, /*controlED*/ control_enable); //Motor control
+                                           /*direction_B*/ direction_just, /*speed_B*/ speed, /*controlED*/ control_enable); // Motor control
     break;
   case /* constant-expression */ RightBackward:
     /* code */
     directionRecord = 8;
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ speed / 2,
-                                           /*direction_B*/ direction_back, /*speed_B*/ speed, /*controlED*/ control_enable); //Motor control
+                                           /*direction_B*/ direction_back, /*speed_B*/ speed, /*controlED*/ control_enable); // Motor control
     break;
   case /* constant-expression */ stop_it:
     /* code */
     directionRecord = 9;
     AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_void, /*speed_A*/ 0,
-                                           /*direction_B*/ direction_void, /*speed_B*/ 0, /*controlED*/ control_enable); //Motor control
+                                           /*direction_B*/ direction_void, /*speed_B*/ 0, /*controlED*/ control_enable); // Motor control
 
     break;
   default:
@@ -332,14 +332,14 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SensorDataUpdate(void)
   { /*Battery voltage status update*/
     static unsigned long VoltageData_time = 0;
     static int VoltageData_number = 1;
-    if (millis() - VoltageData_time > 10) //read and update the data per 10ms
+    if (millis() - VoltageData_time > 10) // read and update the data per 10ms
     {
       VoltageData_time = millis();
       VoltageData_V = AppVoltage.DeviceDriverSet_Voltage_getAnalogue();
       if (VoltageData_V < VoltageDetection)
       {
         VoltageData_number++;
-        if (VoltageData_number == 50) //Continuity to judge the latest voltage value multiple 
+        if (VoltageData_number == 50) // Continuity to judge the latest voltage value multiple
         {
           VoltageDetectionStatus = true;
           VoltageData_number = 0;
@@ -364,7 +364,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SensorDataUpdate(void)
     TrackingDetectionStatus_M = function_xxx(TrackingData_M, TrackingDetection_S, TrackingDetection_E);
     TrackingData_L = AppITR20001.DeviceDriverSet_ITR20001_getAnaloguexxx_L();
     TrackingDetectionStatus_L = function_xxx(TrackingData_L, TrackingDetection_S, TrackingDetection_E);
-    //ITR20001 Check if the car leaves the ground
+    // ITR20001 Check if the car leaves the ground
     ApplicationFunctionSet_SmartRobotCarLeaveTheGround();
   }
 
@@ -424,7 +424,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_RGB(void)
 {
   static unsigned long getAnalogue_time = 0;
   FastLED.clear(true);
-  if (true == VoltageDetectionStatus) //Act on low power state？
+  if (true == VoltageDetectionStatus) // Act on low power state？
   {
     if ((millis() - getAnalogue_time) > 3000)
     {
@@ -482,7 +482,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_RGB(void)
   }
   else if (((function_xxx((temp), 500, 3000)) && VoltageDetectionStatus == true) || VoltageDetectionStatus == false)
   {
-    switch (Application_SmartRobotCarxxx0.Functional_Mode) //Act on mode control sequence
+    switch (Application_SmartRobotCarxxx0.Functional_Mode) // Act on mode control sequence
     {
     case /* constant-expression */ Standby_mode:
       /* code */
@@ -576,12 +576,12 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Tracking(void)
   static unsigned long MotorRL_time = 0;
   if (Application_SmartRobotCarxxx0.Functional_Mode == TraceBased_mode)
   {
-    if (first_is == true) //Enter the mode for the first time, and modulate the steering gear to 90 degrees
+    if (first_is == true) // Enter the mode for the first time, and modulate the steering gear to 90 degrees
     {
       AppServo.DeviceDriverSet_Servo_control(90 /*Position_angle*/);
       first_is = false;
     }
-    if (Car_LeaveTheGround == false) //车子离开地面了？
+    if (Car_LeaveTheGround == false) // 车子离开地面了？
     {
       ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
       return;
@@ -626,7 +626,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Tracking(void)
     }
     else ////The car is not on the black line. execute Blind scan
     {
-      if (timestamp == true) //acquire timestamp
+      if (timestamp == true) // acquire timestamp
       {
         timestamp = false;
         MotorRL_time = millis();
@@ -670,7 +670,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Obstacle(void)
   {
     uint8_t switc_ctrl = 0;
     uint16_t get_Distance;
-    if (first_is == true) //Enter the mode for the first time, and modulate the steering gear to 90 degrees
+    if (first_is == true) // Enter the mode for the first time, and modulate the steering gear to 90 degrees
     {
       AppServo.DeviceDriverSet_Servo_control(90 /*Position_angle*/);
       first_is = false;
@@ -686,7 +686,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Obstacle(void)
     {
       ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
 
-      for (uint8_t i = 1; i < 6; i += 2) //1、3、5 Omnidirectional detection of obstacle avoidance status
+      for (uint8_t i = 1; i < 6; i += 2) // 1、3、5 Omnidirectional detection of obstacle avoidance status
       {
         AppServo.DeviceDriverSet_Servo_control(30 * i /*Position_angle*/);
         delay_xxx(1);
@@ -726,7 +726,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Obstacle(void)
         }
       }
     }
-    else //if (function_xxx(get_Distance, 20, 50))
+    else // if (function_xxx(get_Distance, 20, 50))
     {
       ApplicationFunctionSet_SmartRobotCarMotionControl(Forward, 150);
     }
@@ -749,7 +749,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Follow(void)
   static bool first_is = true;
   if (Application_SmartRobotCarxxx0.Functional_Mode == Follow_mode)
   {
-    if (first_is == true) //Enter the mode for the first time, and modulate the steering gear to 90 degrees
+    if (first_is == true) // Enter the mode for the first time, and modulate the steering gear to 90 degrees
     {
       AppServo.DeviceDriverSet_Servo_control(90 /*Position_angle*/);
       first_is = false;
@@ -761,12 +761,12 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Follow(void)
     }
 
     AppULTRASONIC.DeviceDriverSet_ULTRASONIC_Get(&ULTRASONIC_Get /*out*/);
-    if (false == function_xxx(ULTRASONIC_Get, 0, 20)) //There is no obstacle 20 cm ahead?
+    if (false == function_xxx(ULTRASONIC_Get, 0, 20)) // There is no obstacle 20 cm ahead?
     {
       ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
       static unsigned long time_Servo = 0;
       static uint8_t Position_Servo_xx = 0;
-      if (millis() - time_Servo > 1000) //作用于舵机停留位置时长_2s
+      if (millis() - time_Servo > 1000) // 作用于舵机停留位置时长_2s
       {
         timestamp = 3;
         Position_Servo += 1;
@@ -779,9 +779,9 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Follow(void)
       }
       if (timestamp == 3)
       {
-        if (Position_Servo_xx != Position_Servo) //Act on servo motor：avoid loop execution
+        if (Position_Servo_xx != Position_Servo) // Act on servo motor：avoid loop execution
         {
-          Position_Servo_xx = Position_Servo; //Act on servo motor：rotation angle record
+          Position_Servo_xx = Position_Servo; // Act on servo motor：rotation angle record
 
           if (Position_Servo == 1)
           {
@@ -863,7 +863,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Servo(uint8_t Set_Servo)
 
   uint8_t z_angle = AppServo.Position_angle_z;
   uint8_t y_angle = AppServo.Position_angle_y;
-  uint8_t temp_Set_Servo = Set_Servo; //防止被优化
+  uint8_t temp_Set_Servo = Set_Servo; // 防止被优化
 
   switch (temp_Set_Servo)
   {
@@ -877,11 +877,11 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Servo(uint8_t Set_Servo)
     {
       y_angle += 1;
     }
-    if (y_angle <= 3) //minimum control
+    if (y_angle <= 3) // minimum control
     {
       y_angle = 3;
     }
-    if (y_angle >= 11) //maximum control
+    if (y_angle >= 11) // maximum control
     {
       y_angle = 11;
     }
@@ -900,11 +900,11 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Servo(uint8_t Set_Servo)
       z_angle -= 1;
     }
 
-    if (z_angle <= 1) //minimum control
+    if (z_angle <= 1) // minimum control
     {
       z_angle = 1;
     }
-    if (z_angle >= 17) //maximum control
+    if (z_angle >= 17) // maximum control
     {
       z_angle = 17;
     }
@@ -927,9 +927,9 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Standby(void)
   if (Application_SmartRobotCarxxx0.Functional_Mode == Standby_mode)
   {
     ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
-    if (true == is_ED) //Used to zero yaw raw data(Make sure the car is placed on a stationary surface!)
+    if (true == is_ED) // Used to zero yaw raw data(Make sure the car is placed on a stationary surface!)
     {
-      static unsigned long timestamp; //acquire timestamp
+      static unsigned long timestamp; // acquire timestamp
       if (millis() - timestamp > 20)
       {
         timestamp = millis();
@@ -944,7 +944,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Standby(void)
         if (cout > 10)
         {
           is_ED = false;
-          //AppMPU6050getdata.MPU6050_calibration();
+          // AppMPU6050getdata.MPU6050_calibration();
           AppQMI8658C.QMI8658C_calibration();
         }
       }
@@ -952,7 +952,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Standby(void)
   }
 }
 
-/* 
+/*
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  * Begin:CMD
  * Graphical programming and command control module
@@ -989,23 +989,23 @@ void ApplicationFunctionSet::CMD_MotorControl_xxx0(uint8_t is_MotorSelection, ui
     }
     else
     {
-      switch (is_MotorSelection) //motor selection
+      switch (is_MotorSelection) // motor selection
       {
       case 0:
       {
         is_MotorSpeed_A = is_MotorSpeed;
         is_MotorSpeed_B = is_MotorSpeed;
         if (1 == is_MotorDirection)
-        { //turn forward
+        { // turn forward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_just, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else if (2 == is_MotorDirection)
-        { //turn backward
+        { // turn backward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_back, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else
         {
@@ -1017,16 +1017,16 @@ void ApplicationFunctionSet::CMD_MotorControl_xxx0(uint8_t is_MotorSelection, ui
       {
         is_MotorSpeed_A = is_MotorSpeed;
         if (1 == is_MotorDirection)
-        { //turn forward
+        { // turn forward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_void, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else if (2 == is_MotorDirection)
-        { //turn backward
+        { // turn backward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_void, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else
         {
@@ -1038,16 +1038,16 @@ void ApplicationFunctionSet::CMD_MotorControl_xxx0(uint8_t is_MotorSelection, ui
       {
         is_MotorSpeed_B = is_MotorSpeed;
         if (1 == is_MotorDirection)
-        { //turn forward
+        { // turn forward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_void, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_just, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else if (2 == is_MotorDirection)
-        { //turn backward
+        { // turn backward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_void, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_back, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else
         {
@@ -1084,23 +1084,23 @@ void ApplicationFunctionSet::CMD_MotorControl_xxx0(void)
     }
     else
     {
-      switch (CMD_is_MotorSelection) //motor selection
+      switch (CMD_is_MotorSelection) // motor selection
       {
       case 0:
       {
         is_MotorSpeed_A = CMD_is_MotorSpeed;
         is_MotorSpeed_B = CMD_is_MotorSpeed;
         if (1 == CMD_is_MotorDirection)
-        { //turn forward
+        { // turn forward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_just, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else if (2 == CMD_is_MotorDirection)
-        { //turn backward
+        { // turn backward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_back, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else
         {
@@ -1112,16 +1112,16 @@ void ApplicationFunctionSet::CMD_MotorControl_xxx0(void)
       {
         is_MotorSpeed_A = CMD_is_MotorSpeed;
         if (1 == CMD_is_MotorDirection)
-        { //turn forward
+        { // turn forward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_void, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else if (2 == CMD_is_MotorDirection)
-        { //turn backward
+        { // turn backward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_back, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_void, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else
         {
@@ -1133,16 +1133,16 @@ void ApplicationFunctionSet::CMD_MotorControl_xxx0(void)
       {
         is_MotorSpeed_B = CMD_is_MotorSpeed;
         if (1 == CMD_is_MotorDirection)
-        { //turn forward
+        { // turn forward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_void, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_just, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else if (2 == CMD_is_MotorDirection)
-        { //turn backward
+        { // turn backward
           AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_void, /*speed_A*/ is_MotorSpeed_A,
                                                  /*direction_B*/ direction_back, /*speed_B*/ is_MotorSpeed_B,
-                                                 /*controlED*/ control_enable); //Motor control
+                                                 /*controlED*/ control_enable); // Motor control
         }
         else
         {
@@ -1170,10 +1170,10 @@ static void CMD_CarControl(uint8_t is_CarDirection, uint8_t is_CarSpeed)
 {
   switch (is_CarDirection)
   {
-  case 1: 
+  case 1:
     ApplicationFunctionSet_SmartRobotCarMotionControl(Left, is_CarSpeed);
     break;
-  case 2: 
+  case 2:
     ApplicationFunctionSet_SmartRobotCarMotionControl(Right, is_CarSpeed);
     break;
   case 3: /*movement direction mode forward*/
@@ -1194,14 +1194,14 @@ static void CMD_CarControl(uint8_t is_CarDirection, uint8_t is_CarSpeed)
 void ApplicationFunctionSet::CMD_CarControlTimeLimit_xxx0(uint8_t is_CarDirection, uint8_t is_CarSpeed, uint32_t is_Timer)
 {
   static boolean CarControl = false;
-  static boolean CarControl_TE = false; //Time stamp
+  static boolean CarControl_TE = false; // Time stamp
   static boolean CarControl_return = false;
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_CarControl_TimeLimit) //enter time-limited control mode
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_CarControl_TimeLimit) // enter time-limited control mode
   {
     CarControl = true;
-    if (is_Timer != 0) //#1 if the pre-set time is not ... (zero)
+    if (is_Timer != 0) // #1 if the pre-set time is not ... (zero)
     {
-      if ((millis() - Application_SmartRobotCarxxx0.CMD_CarControl_Millis) > (is_Timer)) //check the timestamp
+      if ((millis() - Application_SmartRobotCarxxx0.CMD_CarControl_Millis) > (is_Timer)) // check the timestamp
       {
         CarControl_TE = true;
         ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
@@ -1218,7 +1218,7 @@ void ApplicationFunctionSet::CMD_CarControlTimeLimit_xxx0(uint8_t is_CarDirectio
       }
       else
       {
-        CarControl_TE = false; //There still has time left
+        CarControl_TE = false; // There still has time left
         CarControl_return = false;
       }
     }
@@ -1241,14 +1241,14 @@ void ApplicationFunctionSet::CMD_CarControlTimeLimit_xxx0(uint8_t is_CarDirectio
 void ApplicationFunctionSet::CMD_CarControlTimeLimit_xxx0(void)
 {
   static boolean CarControl = false;
-  static boolean CarControl_TE = false; //Time stamp
+  static boolean CarControl_TE = false; // Time stamp
   static boolean CarControl_return = false;
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_CarControl_TimeLimit) //enter time-limited control mode
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_CarControl_TimeLimit) // enter time-limited control mode
   {
     CarControl = true;
-    if (CMD_is_CarTimer != 0) //#1 if the pre-set time is not ... (zero)
+    if (CMD_is_CarTimer != 0) // #1 if the pre-set time is not ... (zero)
     {
-      if ((millis() - Application_SmartRobotCarxxx0.CMD_CarControl_Millis) > (CMD_is_CarTimer)) //check the timestamp
+      if ((millis() - Application_SmartRobotCarxxx0.CMD_CarControl_Millis) > (CMD_is_CarTimer)) // check the timestamp
       {
         CarControl_TE = true;
         ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
@@ -1265,7 +1265,7 @@ void ApplicationFunctionSet::CMD_CarControlTimeLimit_xxx0(void)
       }
       else
       {
-        CarControl_TE = false; //There still has time left
+        CarControl_TE = false; // There still has time left
         CarControl_return = false;
       }
     }
@@ -1292,7 +1292,7 @@ void ApplicationFunctionSet::CMD_CarControlTimeLimit_xxx0(void)
 void ApplicationFunctionSet::CMD_CarControlNoTimeLimit_xxx0(uint8_t is_CarDirection, uint8_t is_CarSpeed)
 {
   static boolean CarControl = false;
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_CarControl_NoTimeLimit) //enter no time-limited control mode
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_CarControl_NoTimeLimit) // enter no time-limited control mode
   {
     CarControl = true;
     CMD_CarControl(is_CarDirection, is_CarSpeed);
@@ -1308,7 +1308,7 @@ void ApplicationFunctionSet::CMD_CarControlNoTimeLimit_xxx0(uint8_t is_CarDirect
 void ApplicationFunctionSet::CMD_CarControlNoTimeLimit_xxx0(void)
 {
   static boolean CarControl = false;
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_CarControl_NoTimeLimit) //enter no time-limited control mode
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_CarControl_NoTimeLimit) // enter no time-limited control mode
   {
     CarControl = true;
     CMD_CarControl(CMD_is_CarDirection, CMD_is_CarSpeed);
@@ -1341,7 +1341,7 @@ void ApplicationFunctionSet::CMD_MotorControlSpeed_xxx0(uint8_t is_Speed_L, uint
     {
       AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ is_Speed_L,
                                              /*direction_B*/ direction_just, /*speed_B*/ is_Speed_R,
-                                             /*controlED*/ control_enable); //Motor control
+                                             /*controlED*/ control_enable); // Motor control
     }
   }
   else
@@ -1366,7 +1366,7 @@ void ApplicationFunctionSet::CMD_MotorControlSpeed_xxx0(void)
     {
       AppMotor.DeviceDriverSet_Motor_control(/*direction_A*/ direction_just, /*speed_A*/ CMD_is_MotorSpeed_L,
                                              /*direction_B*/ direction_just, /*speed_B*/ CMD_is_MotorSpeed_R,
-                                             /*controlED*/ control_enable); //Motor control
+                                             /*controlED*/ control_enable); // Motor control
     }
   }
   else
@@ -1399,15 +1399,15 @@ void ApplicationFunctionSet::CMD_LightingControlTimeLimit_xxx0(uint8_t is_Lighti
                                                                uint32_t is_LightingTimer)
 {
   static boolean LightingControl = false;
-  static boolean LightingControl_TE = false; //Time stamp
+  static boolean LightingControl_TE = false; // Time stamp
   static boolean LightingControl_return = false;
 
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_LightingControl_TimeLimit) //enter time-limited control mode
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_LightingControl_TimeLimit) // enter time-limited control mode
   {
     LightingControl = true;
-    if (is_LightingTimer != 0) //#1 if the pre-set time is not ... (zero)
+    if (is_LightingTimer != 0) // #1 if the pre-set time is not ... (zero)
     {
-      if ((millis() - Application_SmartRobotCarxxx0.CMD_LightingControl_Millis) > (is_LightingTimer)) //Check the timestamp
+      if ((millis() - Application_SmartRobotCarxxx0.CMD_LightingControl_Millis) > (is_LightingTimer)) // Check the timestamp
       {
         LightingControl_TE = true;
         FastLED.clear(true);
@@ -1423,7 +1423,7 @@ void ApplicationFunctionSet::CMD_LightingControlTimeLimit_xxx0(uint8_t is_Lighti
       }
       else
       {
-        LightingControl_TE = false; //There still has time left
+        LightingControl_TE = false; // There still has time left
         LightingControl_return = false;
       }
     }
@@ -1445,15 +1445,15 @@ void ApplicationFunctionSet::CMD_LightingControlTimeLimit_xxx0(uint8_t is_Lighti
 void ApplicationFunctionSet::CMD_LightingControlTimeLimit_xxx0(void)
 {
   static boolean LightingControl = false;
-  static boolean LightingControl_TE = false; //Time stamp
+  static boolean LightingControl_TE = false; // Time stamp
   static boolean LightingControl_return = false;
 
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_LightingControl_TimeLimit) //Enter Lighting Control mode with time-limited
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_LightingControl_TimeLimit) // Enter Lighting Control mode with time-limited
   {
     LightingControl = true;
-    if (CMD_is_LightingTimer != 0) //#1 if the pre-set time is not ... (zero)
+    if (CMD_is_LightingTimer != 0) // #1 if the pre-set time is not ... (zero)
     {
-      if ((millis() - Application_SmartRobotCarxxx0.CMD_LightingControl_Millis) > (CMD_is_LightingTimer)) //Check the timestamp
+      if ((millis() - Application_SmartRobotCarxxx0.CMD_LightingControl_Millis) > (CMD_is_LightingTimer)) // Check the timestamp
       {
         LightingControl_TE = true;
         FastLED.clear(true);
@@ -1469,7 +1469,7 @@ void ApplicationFunctionSet::CMD_LightingControlTimeLimit_xxx0(void)
       }
       else
       {
-        LightingControl_TE = false; //There still has time left
+        LightingControl_TE = false; // There still has time left
         LightingControl_return = false;
       }
     }
@@ -1496,7 +1496,7 @@ void ApplicationFunctionSet::CMD_LightingControlTimeLimit_xxx0(void)
 void ApplicationFunctionSet::CMD_LightingControlNoTimeLimit_xxx0(uint8_t is_LightingSequence, uint8_t is_LightingColorValue_R, uint8_t is_LightingColorValue_G, uint8_t is_LightingColorValue_B)
 {
   static boolean LightingControl = false;
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_LightingControl_NoTimeLimit) //Enter Lighting Control mode without time-limited
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_LightingControl_NoTimeLimit) // Enter Lighting Control mode without time-limited
   {
     LightingControl = true;
     CMD_Lighting(is_LightingSequence, is_LightingColorValue_R, is_LightingColorValue_G, is_LightingColorValue_B);
@@ -1512,7 +1512,7 @@ void ApplicationFunctionSet::CMD_LightingControlNoTimeLimit_xxx0(uint8_t is_Ligh
 void ApplicationFunctionSet::CMD_LightingControlNoTimeLimit_xxx0(void)
 {
   static boolean LightingControl = false;
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_LightingControl_NoTimeLimit) //Enter Lighting Control mode without time-limited
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_LightingControl_NoTimeLimit) // Enter Lighting Control mode without time-limited
   {
     LightingControl = true;
     CMD_Lighting(CMD_is_LightingSequence, CMD_is_LightingColorValue_R, CMD_is_LightingColorValue_G, CMD_is_LightingColorValue_B);
@@ -1532,7 +1532,7 @@ void ApplicationFunctionSet::CMD_LightingControlNoTimeLimit_xxx0(void)
 */
 void ApplicationFunctionSet::CMD_ClearAllFunctions_xxx0(void)
 {
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_ClearAllFunctions_Standby_mode) //Command:N100 Clear all functions to enter standby mode
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_ClearAllFunctions_Standby_mode) // Command:N100 Clear all functions to enter standby mode
   {
     ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
     FastLED.clear(true);
@@ -1540,7 +1540,7 @@ void ApplicationFunctionSet::CMD_ClearAllFunctions_xxx0(void)
     Application_SmartRobotCarxxx0.Motion_Control = stop_it;
     Application_SmartRobotCarxxx0.Functional_Mode = Standby_mode;
   }
-  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_ClearAllFunctions_Programming_mode) //Command:N110 Clear all functions and enter programming mode
+  if (Application_SmartRobotCarxxx0.Functional_Mode == CMD_ClearAllFunctions_Programming_mode) // Command:N110 Clear all functions and enter programming mode
   {
 
     ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
@@ -1558,9 +1558,9 @@ void ApplicationFunctionSet::CMD_ClearAllFunctions_xxx0(void)
 */
 void ApplicationFunctionSet::CMD_UltrasoundModuleStatus_xxx0(uint8_t is_get)
 {
-  AppULTRASONIC.DeviceDriverSet_ULTRASONIC_Get(&UltrasoundData_cm /*out*/); //Ultrasonic data
+  AppULTRASONIC.DeviceDriverSet_ULTRASONIC_Get(&UltrasoundData_cm /*out*/); // Ultrasonic data
   UltrasoundDetectionStatus = function_xxx(UltrasoundData_cm, 0, ObstacleDetection);
-  if (1 == is_get) //ultrasonic sensor  is_get Start     true：has obstacle / false: no obstable
+  if (1 == is_get) // ultrasonic sensor  is_get Start     true：has obstacle / false: no obstable
   {
     if (true == UltrasoundDetectionStatus)
     {
@@ -1575,7 +1575,7 @@ void ApplicationFunctionSet::CMD_UltrasoundModuleStatus_xxx0(uint8_t is_get)
 #endif
     }
   }
-  else if (2 == is_get) //ultrasonic sensor is_get data
+  else if (2 == is_get) // ultrasonic sensor is_get data
   {
     char toString[10];
     sprintf(toString, "%d", UltrasoundData_cm);
@@ -1655,7 +1655,7 @@ void ApplicationFunctionSet::CMD_TraceModuleStatus_xxx0(uint8_t is_get)
   Application_SmartRobotCarxxx0.Functional_Mode = CMD_Programming_mode; /*set mode to programming mode<Waiting for the next set of control commands>*/
 }
 
-/* 
+/*
  * End:CMD
  * Graphical programming and command control module
  $ Elegoo & SmartRobot & 2020-06
@@ -1704,7 +1704,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_IRrecv(void)
   if (AppIRrecv.DeviceDriverSet_IRrecv_Get(&IRrecv_button /*out*/))
   {
     IRrecv_en = true;
-    //Serial.println(IRrecv_button);
+    // Serial.println(IRrecv_button);
   }
   if (true == IRrecv_en)
   {
@@ -1740,7 +1740,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_IRrecv(void)
       /* code */ Application_SmartRobotCarxxx0.Functional_Mode = Follow_mode;
       break;
     case /* constant-expression */ 9:
-      /* code */ if (Application_SmartRobotCarxxx0.Functional_Mode == TraceBased_mode) //Adjust the threshold of the line tracking module to adapt the actual environment
+      /* code */ if (Application_SmartRobotCarxxx0.Functional_Mode == TraceBased_mode) // Adjust the threshold of the line tracking module to adapt the actual environment
       {
         if (TrackingDetection_S < 600)
         {
@@ -1831,7 +1831,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
       SerialPortData += (char)c;
     }
   }
-  if (c == '}') //Data frame tail check
+  if (c == '}') // Data frame tail check
   {
 #if _Test_print
     Serial.println(SerialPortData);
@@ -1842,23 +1842,23 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
     //   SerialPortData = "";
     //   return;
     // }
-    // if (true == SerialPortData.equals("{Factory}") || true == SerialPortData.equals("{WA_NO}") || true == SerialPortData.equals("{WA_OK}")) 
+    // if (true == SerialPortData.equals("{Factory}") || true == SerialPortData.equals("{WA_NO}") || true == SerialPortData.equals("{WA_OK}"))
     // {
     //   SerialPortData = "";
     //   return;
     // }
-    StaticJsonDocument<200> doc;                                       //Declare a JsonDocument object
-    DeserializationError error = deserializeJson(doc, SerialPortData); //Deserialize JSON data from the serial data buffer
+    StaticJsonDocument<200> doc;                                       // Declare a JsonDocument object
+    DeserializationError error = deserializeJson(doc, SerialPortData); // Deserialize JSON data from the serial data buffer
     SerialPortData = "";
     if (error)
     {
       Serial.println("error:deserializeJson");
     }
-    else if (!error) //Check if the deserialization is successful
+    else if (!error) // Check if the deserialization is successful
     {
       int control_mode_N = doc["N"];
       char *temp = doc["H"];
-      CommandSerialNumber = temp; //Get the serial number of the new command
+      CommandSerialNumber = temp; // Get the serial number of the new command
 
       /*Please view the following code blocks in conjunction with the Communication protocol for Smart Robot Car.pdf*/
       switch (control_mode_N)
@@ -1881,7 +1881,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
         CMD_is_CarTimer = doc["T"];
         Application_SmartRobotCarxxx0.CMD_CarControl_Millis = millis();
 #if _is_print
-        //Serial.print('{' + CommandSerialNumber + "_ok}");
+        // Serial.print('{' + CommandSerialNumber + "_ok}");
 #endif
         break;
 
@@ -1913,21 +1913,21 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
       case 7:                                                                          /*<Command：N 7> */
         Application_SmartRobotCarxxx0.Functional_Mode = CMD_LightingControl_TimeLimit; /*Lighting control:Time limited mode*/
 
-        CMD_is_LightingSequence = doc["D1"]; //Lighting (Left, front, right, back and center)
+        CMD_is_LightingSequence = doc["D1"]; // Lighting (Left, front, right, back and center)
         CMD_is_LightingColorValue_R = doc["D2"];
         CMD_is_LightingColorValue_G = doc["D3"];
         CMD_is_LightingColorValue_B = doc["D4"];
         CMD_is_LightingTimer = doc["T"];
         Application_SmartRobotCarxxx0.CMD_LightingControl_Millis = millis();
 #if _is_print
-        //Serial.print('{' + CommandSerialNumber + "_ok}");
+        // Serial.print('{' + CommandSerialNumber + "_ok}");
 #endif
         break;
 
       case 8:                                                                            /*<Command：N 8> */
         Application_SmartRobotCarxxx0.Functional_Mode = CMD_LightingControl_NoTimeLimit; /*Lighting control:No time limited mode*/
 
-        CMD_is_LightingSequence = doc["D1"]; //Lighting (Left, front, right, back and center)
+        CMD_is_LightingSequence = doc["D1"]; // Lighting (Left, front, right, back and center)
         CMD_is_LightingColorValue_R = doc["D2"];
         CMD_is_LightingColorValue_G = doc["D3"];
         CMD_is_LightingColorValue_B = doc["D4"];
@@ -1939,14 +1939,14 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
       case 21: /*<Command：N 21>：ultrasonic sensor: detect obstacle distance */
         CMD_UltrasoundModuleStatus_xxx0(doc["D1"]);
 #if _is_print
-        //Serial.print('{' + CommandSerialNumber + "_ok}");
+        // Serial.print('{' + CommandSerialNumber + "_ok}");
 #endif
         break;
 
       case 22: /*<Command：N 22>：IR sensor：for line tracking mode */
         CMD_TraceModuleStatus_xxx0(doc["D1"]);
 #if _is_print
-        //Serial.print('{' + CommandSerialNumber + "_ok}");
+        // Serial.print('{' + CommandSerialNumber + "_ok}");
 #endif
         break;
 
@@ -1975,7 +1975,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
         Application_SmartRobotCarxxx0.Functional_Mode = CMD_ClearAllFunctions_Standby_mode; /*Clear all function:Enter standby mode*/
 #if _is_print
         Serial.print("{ok}");
-        //Serial.print('{' + CommandSerialNumber + "_ok}");
+        // Serial.print('{' + CommandSerialNumber + "_ok}");
 #endif
         break;
 
@@ -1995,7 +1995,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
 
 #if _is_print
         Serial.print("{ok}");
-        //Serial.print('{' + CommandSerialNumber + "_ok}");
+        // Serial.print('{' + CommandSerialNumber + "_ok}");
 #endif
         break;
 
@@ -2011,7 +2011,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
         FastLED.setBrightness(CMD_is_FastLED_setBrightness);
 
 #if _Test_print
-        //Serial.print('{' + CommandSerialNumber + "_ok}");
+        // Serial.print('{' + CommandSerialNumber + "_ok}");
         Serial.print("{ok}");
 #endif
         break;
@@ -2025,7 +2025,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_SerialPortDataAnalysis(void)
       }
 
 #if _is_print
-        //Serial.print('{' + CommandSerialNumber + "_ok}");
+        // Serial.print('{' + CommandSerialNumber + "_ok}");
         Serial.print("{ok}");
 #endif
         break;

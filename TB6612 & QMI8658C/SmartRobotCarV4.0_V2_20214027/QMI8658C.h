@@ -23,10 +23,10 @@ public:
   int16_t ax, ay, az, gx, gy, gz;
   float pith, roll, yaw;
   unsigned long now, lastTime = 0;
-  float dt;      //微分时间
-  float agz = 0; //角度变量
-  long gzo = 0;  //陀螺仪偏移量
+  float dt;      // 微分时间
+  float agz = 0; // 角度变量
+  long gzo = 0;  // 陀螺仪偏移量
 };
 
-//extern QMI8658C _QMI8658C;
+// extern QMI8658C _QMI8658C;
 #endif

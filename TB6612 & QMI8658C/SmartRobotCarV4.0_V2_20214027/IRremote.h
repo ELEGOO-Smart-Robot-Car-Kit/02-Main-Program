@@ -10,7 +10,7 @@
  * Also influenced by http://zovirl.com/2008/11/12/building-a-universal-remote-with-an-arduino/
  *
  * JVC and Panasonic protocol added by Kristian Lauszus (Thanks to zenwheel and other people at the original blog post)
-* LG added by Darryl Smith (based on the JVC protocol)
+ * LG added by Darryl Smith (based on the JVC protocol)
  */
 
 #ifndef IRremote_h
@@ -25,17 +25,19 @@
 // #define TEST
 
 // Results returned from the decoder
-class decode_results {
+class decode_results
+{
 public:
   int decode_type; // NEC, SONY, RC5, UNKNOWN
-  union { // This is used for decoding Panasonic and Sharp data
+  union
+  { // This is used for decoding Panasonic and Sharp data
     unsigned int panasonicAddress;
     unsigned int sharpAddress;
   };
-  unsigned long value; // Decoded value
-  int bits; // Number of bits in decoded value
+  unsigned long value;           // Decoded value
+  int bits;                      // Number of bits in decoded value
   volatile unsigned int *rawbuf; // Raw intervals in .5 us ticks
-  int rawlen; // Number of records in rawbuf.
+  int rawlen;                    // Number of records in rawbuf.
 };
 
 // Values for decode_type
@@ -65,6 +67,7 @@ public:
   int decode(decode_results *results);
   void enableIRIn();
   void resume();
+
 private:
   // These are called by decode
   int getRClevel(decode_results *results, int *offset, int *used, int t1);
@@ -80,9 +83,7 @@ private:
   long decodeSAMSUNG(decode_results *results);
   long decodeHash(decode_results *results);
   int compare(unsigned int oldval, unsigned int newval);
-
-} 
-;
+};
 
 // Only used for testing; can remove virtual for shorter code
 #ifdef TEST
@@ -113,13 +114,12 @@ public:
   void enableIROut(int khz);
   VIRTUAL void mark(int usec);
   VIRTUAL void space(int usec);
-}
-;
+};
 
 // Some useful constants
 
-#define USECPERTICK 50  // microseconds per clock interrupt tick
-#define RAWBUF 100 // Length of raw duration buffer
+#define USECPERTICK 50 // microseconds per clock interrupt tick
+#define RAWBUF 100     // Length of raw duration buffer
 
 // Marks tend to be 100us too long, and spaces 100us too short
 // when received due to sensor lag.
