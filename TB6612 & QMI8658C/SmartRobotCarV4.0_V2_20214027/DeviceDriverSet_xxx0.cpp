@@ -150,8 +150,8 @@ float DeviceDriverSet_Voltage::DeviceDriverSet_Voltage_getAnalogue(void)
 {
   //float Voltage = ((analogRead(PIN_Voltage) * 5.00 / 1024) * 7.67); //7.66666=((10 + 1.50) / 1.50)
   float Voltage = (analogRead(PIN_Voltage) * 0.0375);
-  Voltage = Voltage + (Voltage * 0.08); //补偿8%
-  //return (analogRead(PIN_Voltage) * 5.00 / 1024) * ((10 + 1.50) / 1.50); //读取电压值
+  Voltage = Voltage + (Voltage * 0.08); //Compensation 8%
+  //return (analogRead(PIN_Voltage) * 5.00 / 1024) * ((10 + 1.50) / 1.50); //Read voltage value
   return Voltage;
 }
 
@@ -160,7 +160,7 @@ void DeviceDriverSet_Voltage::DeviceDriverSet_Voltage_Test(void)
 {
   //float Voltage = ((analogRead(PIN_Voltage) * 5.00 / 1024) * 7.67); //7.66666=((10 + 1.50) / 1.50)
   float Voltage = (analogRead(PIN_Voltage) * 0.0375); //7.66666=((10 + 1.50) / 1.50)
-  Voltage = Voltage + (Voltage * 0.08);               //补偿8%
+  Voltage = Voltage + (Voltage * 0.08);               //Compensation 8%
   //Serial.println(analogRead(PIN_Voltage) * 4.97 / 1024);
   Serial.println(Voltage);
 }
@@ -201,20 +201,20 @@ void DeviceDriverSet_Motor::DeviceDriverSet_Motor_Test(void)
 #endif
 
 /*
- Motor_control：AB / 方向、速度
+ Motor_control：AB / movement direction and speed
 */
-void DeviceDriverSet_Motor::DeviceDriverSet_Motor_control(boolean direction_A, uint8_t speed_A, //A组电机参数
-                                                          boolean direction_B, uint8_t speed_B, //B组电机参数
-                                                          boolean controlED                     //AB使能允许 true
-                                                          )                                     //电机控制
+void DeviceDriverSet_Motor::DeviceDriverSet_Motor_control(boolean direction_A, uint8_t speed_A, //Group A motor parameters
+                                                          boolean direction_B, uint8_t speed_B, //Group B motor parameters
+                                                          boolean controlED                     //AB enable setting (true)
+                                                          )                                     //Motor control
 {
 
-  if (controlED == control_enable) //使能允许？
+  if (controlED == control_enable) //Enable motot control？
   {
     digitalWrite(PIN_Motor_STBY, HIGH);
     { //A...Right
 
-      switch (direction_A) //方向控制
+      switch (direction_A) //movement direction control
       {
       case direction_just:
         digitalWrite(PIN_Motor_AIN_1, HIGH);
@@ -388,16 +388,16 @@ void DeviceDriverSet_Servo::DeviceDriverSet_Servo_control(unsigned int Position_
 
   Position_angle_z = Position_angle / 10; //记录当前位置
 }
-//选择舵机、角度
+//Servo motor control:Servo motor number and position angle
 void DeviceDriverSet_Servo::DeviceDriverSet_Servo_controls(uint8_t Servo, unsigned int Position_angle)
 {
   if (Servo == 1 || Servo == 3) //Servo_z
   {
-    if (Position_angle <= 1) //下限控制
+    if (Position_angle <= 1) //minimum angle control
     {
       Position_angle = 1;
     }
-    if (Position_angle >= 17) //上下限控制
+    if (Position_angle >= 17) //maximum angle control
     {
       Position_angle = 17;
     }
@@ -409,11 +409,11 @@ void DeviceDriverSet_Servo::DeviceDriverSet_Servo_controls(uint8_t Servo, unsign
   if (Servo == 2 || Servo == 3) //Servo_y
   {
 
-    if (Position_angle <= 3) //下限控制
+    if (Position_angle <= 3) //minimum angle control
     {
       Position_angle = 3;
     }
-    if (Position_angle >= 11) //上下限控制
+    if (Position_angle >= 11) //maximum angle control
     {
       Position_angle = 11;
     }

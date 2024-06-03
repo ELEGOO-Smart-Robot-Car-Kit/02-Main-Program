@@ -92,10 +92,10 @@ public:
 #if _Test_DeviceDriverSet
   void DeviceDriverSet_Motor_Test(void);
 #endif
-  void DeviceDriverSet_Motor_control(boolean direction_A, uint8_t speed_A, //A组电机参数
-                                     boolean direction_B, uint8_t speed_B, //B组电机参数
-                                     boolean controlED                     //AB使能允许 true
-  );                                                                       //电机控制
+  void DeviceDriverSet_Motor_control(boolean direction_A, uint8_t speed_A, //Group A motor parameters
+                                     boolean direction_B, uint8_t speed_B, //Group B motor parameters
+                                     boolean controlED                     //AB enable setting (true)
+  );                                                                       //motor control
 private:
   // #define PIN_Motor_PWMA 5
   // #define PIN_Motor_PWMB 6
