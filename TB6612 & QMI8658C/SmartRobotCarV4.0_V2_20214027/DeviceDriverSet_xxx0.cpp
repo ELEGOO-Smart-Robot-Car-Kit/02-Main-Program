@@ -4,7 +4,7 @@
  * @LastEditTime: 2021-07-21 13:55:32
  * @LastEditors: Changhua
  * @Description: Smart Robot Car V4.0
- * @FilePath: 
+ * @FilePath:
  */
 #include "DeviceDriverSet_xxx0.h"
 #include "PinChangeInt.h"
@@ -144,24 +144,24 @@ void DeviceDriverSet_ITR20001::DeviceDriverSet_ITR20001_Test(void)
 void DeviceDriverSet_Voltage::DeviceDriverSet_Voltage_Init(void)
 {
   pinMode(PIN_Voltage, INPUT);
-  //analogReference(INTERNAL);
+  // analogReference(INTERNAL);
 }
 float DeviceDriverSet_Voltage::DeviceDriverSet_Voltage_getAnalogue(void)
 {
-  //float Voltage = ((analogRead(PIN_Voltage) * 5.00 / 1024) * 7.67); //7.66666=((10 + 1.50) / 1.50)
+  // float Voltage = ((analogRead(PIN_Voltage) * 5.00 / 1024) * 7.67); //7.66666=((10 + 1.50) / 1.50)
   float Voltage = (analogRead(PIN_Voltage) * 0.0375);
-  Voltage = Voltage + (Voltage * 0.08); //Compensation 8%
-  //return (analogRead(PIN_Voltage) * 5.00 / 1024) * ((10 + 1.50) / 1.50); //Read voltage value
+  Voltage = Voltage + (Voltage * 0.08); // Compensation 8%
+  // return (analogRead(PIN_Voltage) * 5.00 / 1024) * ((10 + 1.50) / 1.50); //Read voltage value
   return Voltage;
 }
 
 #if _Test_DeviceDriverSet
 void DeviceDriverSet_Voltage::DeviceDriverSet_Voltage_Test(void)
 {
-  //float Voltage = ((analogRead(PIN_Voltage) * 5.00 / 1024) * 7.67); //7.66666=((10 + 1.50) / 1.50)
-  float Voltage = (analogRead(PIN_Voltage) * 0.0375); //7.66666=((10 + 1.50) / 1.50)
-  Voltage = Voltage + (Voltage * 0.08);               //Compensation 8%
-  //Serial.println(analogRead(PIN_Voltage) * 4.97 / 1024);
+  // float Voltage = ((analogRead(PIN_Voltage) * 5.00 / 1024) * 7.67); //7.66666=((10 + 1.50) / 1.50)
+  float Voltage = (analogRead(PIN_Voltage) * 0.0375); // 7.66666=((10 + 1.50) / 1.50)
+  Voltage = Voltage + (Voltage * 0.08);               // Compensation 8%
+  // Serial.println(analogRead(PIN_Voltage) * 4.97 / 1024);
   Serial.println(Voltage);
 }
 #endif
@@ -178,8 +178,8 @@ void DeviceDriverSet_Motor::DeviceDriverSet_Motor_Init(void)
 #if _Test_DeviceDriverSet
 void DeviceDriverSet_Motor::DeviceDriverSet_Motor_Test(void)
 {
-  //A...Right
-  //B...Left
+  // A...Right
+  // B...Left
   digitalWrite(PIN_Motor_STBY, HIGH);
 
   digitalWrite(PIN_Motor_AIN_1, HIGH);
@@ -203,18 +203,18 @@ void DeviceDriverSet_Motor::DeviceDriverSet_Motor_Test(void)
 /*
  Motor_control：AB / movement direction and speed
 */
-void DeviceDriverSet_Motor::DeviceDriverSet_Motor_control(boolean direction_A, uint8_t speed_A, //Group A motor parameters
-                                                          boolean direction_B, uint8_t speed_B, //Group B motor parameters
-                                                          boolean controlED                     //AB enable setting (true)
-                                                          )                                     //Motor control
+void DeviceDriverSet_Motor::DeviceDriverSet_Motor_control(boolean direction_A, uint8_t speed_A, // Group A motor parameters
+                                                          boolean direction_B, uint8_t speed_B, // Group B motor parameters
+                                                          boolean controlED                     // AB enable setting (true)
+                                                          )                                     // Motor control
 {
 
-  if (controlED == control_enable) //Enable motot control？
+  if (controlED == control_enable) // Enable motot control？
   {
     digitalWrite(PIN_Motor_STBY, HIGH);
-    { //A...Right
+    { // A...Right
 
-      switch (direction_A) //movement direction control
+      switch (direction_A) // movement direction control
       {
       case direction_just:
         digitalWrite(PIN_Motor_AIN_1, HIGH);
@@ -236,7 +236,7 @@ void DeviceDriverSet_Motor::DeviceDriverSet_Motor_control(boolean direction_A, u
       }
     }
 
-    { //B...Left
+    { // B...Left
       switch (direction_B)
       {
       case direction_just:
@@ -267,11 +267,11 @@ void DeviceDriverSet_Motor::DeviceDriverSet_Motor_control(boolean direction_A, u
 }
 
 /*ULTRASONIC*/
-//#include <NewPing.h>
-// NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
+// #include <NewPing.h>
+//  NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
 void DeviceDriverSet_ULTRASONIC::DeviceDriverSet_ULTRASONIC_Init(void)
 {
-  pinMode(ECHO_PIN, INPUT); //Ultrasonic module initialization
+  pinMode(ECHO_PIN, INPUT); // Ultrasonic module initialization
   pinMode(TRIG_PIN, OUTPUT);
 }
 void DeviceDriverSet_ULTRASONIC::DeviceDriverSet_ULTRASONIC_Get(uint16_t *ULTRASONIC_Get /*out*/)
@@ -328,17 +328,17 @@ void DeviceDriverSet_ULTRASONIC::DeviceDriverSet_ULTRASONIC_Test(void)
 Servo myservo; // create servo object to control a servo
 void DeviceDriverSet_Servo::DeviceDriverSet_Servo_Init(unsigned int Position_angle)
 {
-  myservo.attach(PIN_Servo_z, 500, 2400); //500: 0 degree  2400: 180 degree
+  myservo.attach(PIN_Servo_z, 500, 2400); // 500: 0 degree  2400: 180 degree
   myservo.attach(PIN_Servo_z);
-  myservo.write(Position_angle); //sets the servo position according to the 90（middle）
+  myservo.write(Position_angle); // sets the servo position according to the 90（middle）
   delay_xxx(500);
 
-  myservo.attach(PIN_Servo_y, 500, 2400); //500: 0 degree  2400: 180 degree
+  myservo.attach(PIN_Servo_y, 500, 2400); // 500: 0 degree  2400: 180 degree
   myservo.attach(PIN_Servo_y);
-  myservo.write(Position_angle); //sets the servo position according to the 90（middle）
+  myservo.write(Position_angle); // sets the servo position according to the 90（middle）
   delay_xxx(500);
   myservo.detach();
-  Position_angle_z = Position_angle / 10; //记录当前位置
+  Position_angle_z = Position_angle / 10; // 记录当前位置
 }
 #if _Test_DeviceDriverSet
 void DeviceDriverSet_Servo::DeviceDriverSet_Servo_Test(void)
@@ -386,18 +386,18 @@ void DeviceDriverSet_Servo::DeviceDriverSet_Servo_control(unsigned int Position_
   delay_xxx(450);
   myservo.detach();
 
-  Position_angle_z = Position_angle / 10; //记录当前位置
+  Position_angle_z = Position_angle / 10; // 记录当前位置
 }
-//Servo motor control:Servo motor number and position angle
+// Servo motor control:Servo motor number and position angle
 void DeviceDriverSet_Servo::DeviceDriverSet_Servo_controls(uint8_t Servo, unsigned int Position_angle)
 {
-  if (Servo == 1 || Servo == 3) //Servo_z
+  if (Servo == 1 || Servo == 3) // Servo_z
   {
-    if (Position_angle <= 1) //minimum angle control
+    if (Position_angle <= 1) // minimum angle control
     {
       Position_angle = 1;
     }
-    if (Position_angle >= 17) //maximum angle control
+    if (Position_angle >= 17) // maximum angle control
     {
       Position_angle = 17;
     }
@@ -406,14 +406,14 @@ void DeviceDriverSet_Servo::DeviceDriverSet_Servo_controls(uint8_t Servo, unsign
     delay_xxx(500);
     Position_angle_z = Position_angle;
   }
-  if (Servo == 2 || Servo == 3) //Servo_y
+  if (Servo == 2 || Servo == 3) // Servo_y
   {
 
-    if (Position_angle <= 3) //minimum angle control
+    if (Position_angle <= 3) // minimum angle control
     {
       Position_angle = 3;
     }
-    if (Position_angle >= 11) //maximum angle control
+    if (Position_angle >= 11) // maximum angle control
     {
       Position_angle = 11;
     }
@@ -430,7 +430,7 @@ IRrecv irrecv(RECV_PIN); //  Create an infrared receive drive object
 decode_results results;  //  Create decoding object
 void DeviceDriverSet_IRrecv::DeviceDriverSet_IRrecv_Init(void)
 {
-  irrecv.enableIRIn(); //Enable infrared communication NEC
+  irrecv.enableIRIn(); // Enable infrared communication NEC
 }
 bool DeviceDriverSet_IRrecv::DeviceDriverSet_IRrecv_Get(uint8_t *IRrecv_Get /*out*/)
 {

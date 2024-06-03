@@ -11,18 +11,18 @@
 /*----------------------------------------------------------------------------------------------
   QMI8658C UI Sensor Configuration Settings and Output Data
 */
-///<Configuration Registers>
-#define address 0X6B  //device address
-#define WHO_AM_I 0X00 //Device identifier
-#define CTRL1 0x02    //Serial Interface and Sensor Enable
-#define CTRL2 0x03    //Accelerometer Settings
-#define CTRL3 0x04    //Gyroscope Settings
-#define CTRL4 0X05    //Magnetometer Settings
-#define CTRL5 0X06    //Sensor Data Processing Settings
-#define CTRL7 0x08    //Enable Sensors and Configure Data Reads
-#define CTRL8 0X09    //Reserved – Special Settings
+///< Configuration Registers>
+#define address 0X6B  // device address
+#define WHO_AM_I 0X00 // Device identifier
+#define CTRL1 0x02    // Serial Interface and Sensor Enable
+#define CTRL2 0x03    // Accelerometer Settings
+#define CTRL3 0x04    // Gyroscope Settings
+#define CTRL4 0X05    // Magnetometer Settings
+#define CTRL5 0X06    // Sensor Data Processing Settings
+#define CTRL7 0x08    // Enable Sensors and Configure Data Reads
+#define CTRL8 0X09    // Reserved – Special Settings
 
-///<Sensor Data Output Registers>
+///< Sensor Data Output Registers>
 #define AccX_L 0x35
 #define AccX_H 0x36
 #define AccY_L 0x37
@@ -53,13 +53,13 @@ int16_t QMI8658C_readBytes(void)
 */
 bool QMI8658C::QMI8658C_calibration(void)
 {
-  unsigned short times = 1000; //采样次数
+  unsigned short times = 1000; // 采样次数
   for (int i = 0; i < times; i++)
   {
     gz = QMI8658C_readBytes();
     gzo += gz;
   }
-  gzo /= times; //计算陀螺仪偏移
+  gzo /= times; // 计算陀螺仪偏移
 
   return false;
 }
@@ -80,14 +80,14 @@ bool QMI8658C::QMI8658C_dveInit(void)
       return true;
     }
     delay(10);
-  } while (chip_id == 0); //确保从机设备在线（强行等待 获取 ID ）
+  } while (chip_id == 0); // 确保从机设备在线（强行等待 获取 ID ）
 
-  I2Cdev::writeByte(address, CTRL1, 0x40); //Serial Interface and Sensor Enable<串行接口（SPI或I 2 C）地址自动递增>
-  I2Cdev::writeByte(address, CTRL7, 0x03); //Enable Sensors and Configure Data Reads<Enable Gyroscope Accelerometer>
+  I2Cdev::writeByte(address, CTRL1, 0x40); // Serial Interface and Sensor Enable<串行接口（SPI或I 2 C）地址自动递增>
+  I2Cdev::writeByte(address, CTRL7, 0x03); // Enable Sensors and Configure Data Reads<Enable Gyroscope Accelerometer>
 
-  I2Cdev::writeByte(address, CTRL2, 0x04); //Accelerometer Settings<±2g  500Hz>
-  I2Cdev::writeByte(address, CTRL3, 0x64); //Gyroscope Settings< ±2048dps 500Hz>
-  I2Cdev::writeByte(address, CTRL5, 0x11); //Sensor Data Processing Settings<Enable Gyroscope Accelerometer 低通滤波>
+  I2Cdev::writeByte(address, CTRL2, 0x04); // Accelerometer Settings<±2g  500Hz>
+  I2Cdev::writeByte(address, CTRL3, 0x64); // Gyroscope Settings< ±2048dps 500Hz>
+  I2Cdev::writeByte(address, CTRL5, 0x11); // Sensor Data Processing Settings<Enable Gyroscope Accelerometer 低通滤波>
 
   delay(1000);
 
@@ -105,16 +105,16 @@ bool QMI8658C::QMI8658C_dveInit(void)
 
 bool QMI8658C::QMI8658C_dveGetEulerAngles(float *gyro, float *yaw)
 {
-  unsigned long now = millis();   //当前时间(ms)
-  dt = (now - lastTime) / 1000.0; //微分时间(s)
-  lastTime = now;                 //上一次采样时间(ms)
-  gz = QMI8658C_readBytes();      //读取六轴原始数值
+  unsigned long now = millis();   // 当前时间(ms)
+  dt = (now - lastTime) / 1000.0; // 微分时间(s)
+  lastTime = now;                 // 上一次采样时间(ms)
+  gz = QMI8658C_readBytes();      // 读取六轴原始数值
   float gyroz = -(gz - gzo) / 32.00 * dt;
   if (fabs(gyroz) <= 0.05)
   {
     gyroz = 0.00;
   }
-  agz += gyroz; //z轴角速度积分
+  agz += gyroz; // z轴角速度积分
 
   *gyro = gyroz;
 
@@ -123,16 +123,16 @@ bool QMI8658C::QMI8658C_dveGetEulerAngles(float *gyro, float *yaw)
 }
 bool QMI8658C::QMI8658C_dveGetEulerAngles(float *Yaw)
 {
-  unsigned long now = millis();   //当前时间(ms)
-  dt = (now - lastTime) / 1000.0; //微分时间(s)
-  lastTime = now;                 //上一次采样时间(ms)
+  unsigned long now = millis();   // 当前时间(ms)
+  dt = (now - lastTime) / 1000.0; // 微分时间(s)
+  lastTime = now;                 // 上一次采样时间(ms)
   gz = QMI8658C_readBytes();
-  float gyroz = -(gz - gzo) / 32.00 * dt; //z轴角速度< 131.0 为传感器比例系数常量，详细信息请查阅MPU-6050_DataSheet>
+  float gyroz = -(gz - gzo) / 32.00 * dt; // z轴角速度< 131.0 为传感器比例系数常量，详细信息请查阅MPU-6050_DataSheet>
   if (fabs(gyroz) <= 0.05)
   {
     gyroz = 0.00;
   }
-  agz += gyroz; //z轴角速度积分
+  agz += gyroz; // z轴角速度积分
   *Yaw = agz;
   return false;
 }
@@ -185,7 +185,7 @@ void QMI8658C::QMI8658C_Check(void)
     Serial.println(address_Test, HEX);
     address_Test++;
     delay(100);
-  } while (error); //扫描从机设备
+  } while (error); // 扫描从机设备
   Serial.println("address_Test: OK");
 
   // Wire.beginTransmission(0x51);
