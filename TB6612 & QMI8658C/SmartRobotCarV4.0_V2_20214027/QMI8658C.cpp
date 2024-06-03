@@ -48,18 +48,18 @@ int16_t QMI8658C_readBytes(void)
 }
 
 /*
-  获取陀螺仪静态原始数据
-  作用于偏航角计算时调零参量
+  Get the gyroscope static raw data
+  Zero adjustment parameter for yaw angle calculation
 */
 bool QMI8658C::QMI8658C_calibration(void)
 {
-  unsigned short times = 1000; // 采样次数
+  unsigned short times = 1000; // Sampling times
   for (int i = 0; i < times; i++)
   {
     gz = QMI8658C_readBytes();
     gzo += gz;
   }
-  gzo /= times; // 计算陀螺仪偏移
+  gzo /= times; // Calculating gyro offset
 
   return false;
 }
