@@ -66,7 +66,7 @@ enum SmartRobotCarMotionControl
   RightForward,  //(7)
   RightBackward, //(8)
   stop_it        //(9)
-}; // direction方向:（1）、（2）、 （3）、（4）、（5）、（6）
+}; // direction:（1）、（2）、 （3）、（4）、（5）、（6）
 
 /*Mode Control List*/
 enum SmartRobotCarFunctionalModel
@@ -581,7 +581,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Tracking(void)
       AppServo.DeviceDriverSet_Servo_control(90 /*Position_angle*/);
       first_is = false;
     }
-    if (Car_LeaveTheGround == false) // 车子离开地面了？
+    if (Car_LeaveTheGround == false) // The car left the ground?
     {
       ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
       return;
@@ -766,7 +766,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Follow(void)
       ApplicationFunctionSet_SmartRobotCarMotionControl(stop_it, 0);
       static unsigned long time_Servo = 0;
       static uint8_t Position_Servo_xx = 0;
-      if (millis() - time_Servo > 1000) // 作用于舵机停留位置时长_2s
+      if (millis() - time_Servo > 1000) // The duration of the servo stay position is 2s
       {
         timestamp = 3;
         Position_Servo += 1;
@@ -863,7 +863,7 @@ void ApplicationFunctionSet::ApplicationFunctionSet_Servo(uint8_t Set_Servo)
 
   uint8_t z_angle = AppServo.Position_angle_z;
   uint8_t y_angle = AppServo.Position_angle_y;
-  uint8_t temp_Set_Servo = Set_Servo; // 防止被优化
+  uint8_t temp_Set_Servo = Set_Servo; // Preventing optimization
 
   switch (temp_Set_Servo)
   {
