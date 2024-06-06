@@ -59,4 +59,4 @@ jobs:
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
       - name: Compile Sketch
-        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./TB6612 & QMI8658C\SmartRobotCarV4.0_V2_20214027
+        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./TB6612 & QMI8658C/SmartRobotCarV4.0_V2_20214027
