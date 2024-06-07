@@ -34,6 +34,7 @@ jobs:
           # the variable `fqbn` is set to "arduino:avr:uno".
           - arduino-platform: "arduino:avr"
             fqbn: "arduino:avr:uno"
+            required-libraries: FastLED
 
     # This is the platform GitHub will use to run our workflow,
     # I picked ubuntu.
@@ -49,7 +50,7 @@ jobs:
       # configure the Arduino CLI on the system.
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1.1.1
-      
+        
       # We then install the platform, which one will be determined
       # dynamically by the build matrix.
       - name: Install platform
