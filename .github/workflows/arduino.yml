@@ -34,7 +34,7 @@ jobs:
           # the variable `fqbn` is set to "arduino:avr:uno".
           - arduino-platform: "arduino:avr"
             fqbn: "arduino:avr:uno"
-            required-libraries: FastLED arduino
+            required-libraries: FastLED
 
     # This is the platform GitHub will use to run our workflow,
     # I picked ubuntu.
@@ -58,12 +58,7 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.arduino-platform }}
 
-      - name: Install repo as library
-        run: |
-          mkdir -p "$HOME/Arduino/libraries"
-          ln -s "$PWD" "$HOME/Arduino/libraries/."
-
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
       - name: Compile Sketch
-        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./SmartRobotCarV4.0_V2_20214027
+        run: arduino-cli compile --built-in-libraries ${{ matrix.required-libraries }} --fqbn ${{ matrix.fqbn }} ./SmartRobotCarV4.0_V2_20214027
