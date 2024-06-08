@@ -34,7 +34,7 @@ jobs:
           # the variable `fqbn` is set to "arduino:avr:uno".
           - arduino-platform: "arduino:avr"
             fqbn: "arduino:avr:uno"
-            libraries: "/home/runner/.arduino15/packages/arduino/hardware/avr/1.8.5/cores/arduino"
+            libraries: "/home/runner/.arduino15/packages/arduino/hardware/avr/1.8.5/cores"
 
     # This is the platform GitHub will use to run our workflow,
     # I picked ubuntu.
