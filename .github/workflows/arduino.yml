@@ -34,7 +34,7 @@ jobs:
           # the variable `fqbn` is set to "arduino:avr:uno".
           - arduino-platform: "arduino:avr"
             fqbn: "arduino:avr:uno"
-            libraries: "/home/runner/work/Arduino/libraries"
+            libraries: "/home/runner/Arduino/libraries"
 
     # This is the platform GitHub will use to run our workflow,
     # I picked ubuntu.
