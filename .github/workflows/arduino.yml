@@ -23,7 +23,7 @@ jobs:
         # The matrix will produce one job for each configuration
         # parameter of type `arduino-platform`, in this case, it
         # is only 1.
-        arduino-platform: ["arduino:avr@1.8.5"]
+        arduino-platform: ["arduino:avr"]
         # This is usually optional but we need to statically define the
         # FQBN of the boards we want to test for each platform. In the
         # future the CLI might automatically detect and download the 
@@ -32,7 +32,7 @@ jobs:
         include:
           # This works like this: when the platformn is "arduino:avr",
           # the variable `fqbn` is set to "arduino:avr:uno".
-          - arduino-platform: "arduino:avr"
+          - arduino-platform: "arduino:avr@1.8.5"
             fqbn: "arduino:avr:uno"
             libraries: "/home/runner/.arduino15/packages/arduino/hardware/avr/1.8.5/cores/arduino"
 
