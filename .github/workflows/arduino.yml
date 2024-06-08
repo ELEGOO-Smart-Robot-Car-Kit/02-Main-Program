@@ -59,7 +59,7 @@ jobs:
 
       # If you want to install any required libraries that your project uses it is time to do so now:
       - name: Install libraries
-        run: arduino-cli lib install "FastLED@3.7.0"
+        run: arduino-cli lib install "FastLED@3.7.0" "Adafruit Circuit Playground@1.12.0"
 
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
