@@ -63,7 +63,9 @@ jobs:
       - name: Install libraries
         run: arduino-cli lib install "FastLED@3.7.0" "Adafruit Circuit Playground@1.12.0"
 
+      - name: config dump
+        run: arduino-cli config dump
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
       - name: Compile Sketch
-        run: arduino-cli compile --libraries ${{ matrix.libraries }} --fqbn ${{ matrix.fqbn }} ./SmartRobotCarV4.0_V2_20214027 --warnings more
+        run: arduino-cli compile --librarie ${{ matrix.libraries }} --fqbn ${{ matrix.fqbn }} ./SmartRobotCarV4.0_V2_20214027 --warnings more
