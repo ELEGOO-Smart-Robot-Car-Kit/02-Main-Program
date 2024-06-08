@@ -60,7 +60,7 @@ jobs:
 
       # If you want to install any required libraries that your project uses it is time to do so now:
       - name: Install libraries
-        run: arduino-cli lib install "FastLED@3.1.0" "Adafruit Circuit Playground@1.12.0" "Servo@1.2.1"
+        run: arduino-cli lib install "FastLED@3.1.0" "Servo@1.2.1"
 
       - name: Config Dump
         run: arduino-cli config dump --verbose
