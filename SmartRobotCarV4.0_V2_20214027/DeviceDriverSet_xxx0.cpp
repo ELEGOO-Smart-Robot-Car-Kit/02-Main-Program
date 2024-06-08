@@ -338,7 +338,7 @@ void DeviceDriverSet_Servo::DeviceDriverSet_Servo_Init(unsigned int Position_ang
   myservo.write(Position_angle); // sets the servo position according to the 90（middle）
   delay_xxx(500);
   myservo.detach();
-  Position_angle_z = Position_angle / 10; // 记录当前位置
+  Position_angle_z = Position_angle / 10; // Record current location
 }
 #if _Test_DeviceDriverSet
 void DeviceDriverSet_Servo::DeviceDriverSet_Servo_Test(void)
@@ -386,7 +386,7 @@ void DeviceDriverSet_Servo::DeviceDriverSet_Servo_control(unsigned int Position_
   delay_xxx(450);
   myservo.detach();
 
-  Position_angle_z = Position_angle / 10; // 记录当前位置
+  Position_angle_z = Position_angle / 10; // Record current location
 }
 // Servo motor control:Servo motor number and position angle
 void DeviceDriverSet_Servo::DeviceDriverSet_Servo_controls(uint8_t Servo, unsigned int Position_angle)
