@@ -62,9 +62,7 @@ jobs:
       - name: Install libraries
         run: arduino-cli lib install "FastLED@3.2.1" "Servo@1.1.8"
 
-      - name: Config Dump
-        run: arduino-cli config dump --verbose
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
       - name: Compile Sketch
-        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./SmartRobotCarV4.0_V2_20214027 --warnings more
+        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./SmartRobotCarV4.0_V2_20214027
