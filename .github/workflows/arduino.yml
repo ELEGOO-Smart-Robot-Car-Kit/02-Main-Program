@@ -58,7 +58,11 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.arduino-platform }}
 
+      # If you want to install any required libraries that your project uses it is time to do so now:
+      - name: Install libraries
+        run: arduino-cli lib install "FastLED@3.7.0"
+
       # Finally, we compile the sketch, using the FQBN that was set
       # in the build matrix.
       - name: Compile Sketch
-        run: arduino-cli compile --libraries ${{ matrix.required-libraries }} --fqbn ${{ matrix.fqbn }} ./SmartRobotCarV4.0_V2_20214027
+        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./SmartRobotCarV4.0_V2_20214027
