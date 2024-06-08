@@ -23,7 +23,7 @@ jobs:
         # The matrix will produce one job for each configuration
         # parameter of type `arduino-platform`, in this case, it
         # is only 1.
-        arduino-platform: ["arduino:avr"]
+        arduino-platform: ["arduino:avr@1.8.5"]
         # This is usually optional but we need to statically define the
         # FQBN of the boards we want to test for each platform. In the
         # future the CLI might automatically detect and download the 
@@ -34,7 +34,7 @@ jobs:
           # the variable `fqbn` is set to "arduino:avr:uno".
           - arduino-platform: "arduino:avr"
             fqbn: "arduino:avr:uno"
-            libraries: "/home/runner/.arduino15/packages/arduino/hardware/avr/1.8.6"
+            libraries: "/home/runner/.arduino15/packages/arduino/hardware/avr/1.8.5/cores/arduino"
 
     # This is the platform GitHub will use to run our workflow,
     # I picked ubuntu.
