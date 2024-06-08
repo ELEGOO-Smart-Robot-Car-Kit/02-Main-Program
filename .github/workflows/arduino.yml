@@ -38,7 +38,7 @@ jobs:
 
     # This is the platform GitHub will use to run our workflow,
     # I picked ubuntu.
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     # This is the list of steps this job will run.
     steps:
