@@ -32,7 +32,7 @@ jobs:
         include:
           # This works like this: when the platformn is "arduino:avr",
           # the variable `fqbn` is set to "arduino:avr:uno".
-          - arduino-platform: "arduino:avr"
+          - arduino-platform: "arduino:avr@1.8.5"
             fqbn: "arduino:avr:uno"
 
     # This is the platform GitHub will use to run our workflow,
@@ -56,7 +56,7 @@ jobs:
         run: |
           arduino-cli core update-index
 
-          arduino-cli core install ${{ matrix.arduino-platform }}@1.8.5
+          arduino-cli core install ${{ matrix.arduino-platform }}
 
       # If you want to install any required libraries that your project uses it is time to do so now:
       - name: Install libraries
