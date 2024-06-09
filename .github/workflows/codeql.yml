@@ -13,23 +13,9 @@ name: "CodeQL"
 
 on:
   push:
-<<<<<<< HEAD
-<<<<<<< HEAD
-    branches: [main]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [main]
-=======
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
->>>>>>> parent of a103fda (tst)
-=======
-    branches: [master]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [master]
->>>>>>> 45364593b64861cc441dfd91526caf53b43980d9
   schedule:
     - cron: '28 1 * * 1'
 
